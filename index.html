@@ -7,44 +7,34 @@
     <style>
         :root { --main-pink: #ffb6c1; --dark-pink: #ff4d6d; --soft-pink: #fff0f3; }
         body { background: var(--soft-pink); font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 20px 0; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; }
-        
         .container { background: white; padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(255, 77, 109, 0.2); width: 92%; max-width: 450px; text-align: center; border: 3px solid var(--main-pink); }
-        
         #login-screen input { padding: 12px; border: 2px solid var(--main-pink); border-radius: 12px; width: 80%; margin: 15px 0; font-size: 18px; text-align: center; outline: none; }
-        #login-screen button { background: var(--dark-pink); color: white; border: none; padding: 12px 25px; border-radius: 12px; font-size: 18px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        #login-screen button:hover { transform: scale(1.05); background: #e63958; }
-
+        #login-screen button { background: var(--dark-pink); color: white; border: none; padding: 12px 25px; border-radius: 12px; font-size: 18px; cursor: pointer; font-weight: bold; }
         #main-content { display: none; }
-
         .lyrics-container { margin: 20px 0; font-size: 19px; font-weight: bold; color: #ccc; min-height: 120px; }
         .lyric-line { transition: all 0.8s ease; display: block; margin-bottom: 8px; opacity: 0.2; }
         .lyric-line.active { color: var(--dark-pink); opacity: 1; transform: scale(1.1); text-shadow: 0 0 8px var(--main-pink); }
-
         .message { font-size: 16px; color: #555; background: #fff8f9; padding: 15px; border-radius: 10px; border-right: 4px solid var(--dark-pink); margin: 20px 0; line-height: 1.6; }
         .photo-cards { display: flex; justify-content: center; gap: 15px; margin: 20px 0; }
         .photo-card { width: 110px; height: 140px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transform: rotate(-3deg); }
-        .photo-card:nth-child(2) { transform: rotate(3deg); }
         .photo-card img { width: 100%; height: 100%; object-fit: cover; border-radius: 5px; }
-
         .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
         .flip-card { height: 130px; perspective: 1000px; cursor: pointer; }
         .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
         .flip-card.active .flip-card-inner { transform: rotateY(180deg); }
-        .front, .back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 15px; display: flex; align-items: center; justify-content: center; padding: 10px; font-weight: bold; box-sizing: border-box; }
-        .front { background: var(--main-pink); color: white; font-size: 14px; flex-direction: column; }
+        .front, .back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 15px; display: flex; align-items: center; justify-content: center; padding: 10px; font-weight: bold; }
+        .front { background: var(--main-pink); color: white; font-size: 14px; }
         .back { background: var(--dark-pink); color: white; transform: rotateY(180deg); font-size: 13px; }
-
-        /* ستايل العداد المحترف الجديد */
-        .timer-wrapper { background: linear-gradient(145deg, #fff0f3, #ffb6c1); padding: 15px; border-radius: 20px; box-shadow: inset 0 0 10px rgba(255, 77, 109, 0.2); margin-top: 10px; }
+        .timer-wrapper { background: linear-gradient(145deg, #fff0f3, #ffb6c1); padding: 15px; border-radius: 20px; margin-top: 10px; }
         #timer { display: flex; justify-content: space-around; align-items: center; gap: 5px; }
         .time-unit { display: flex; flex-direction: column; align-items: center; }
-        .time-value { background: white; color: var(--dark-pink); padding: 8px 10px; border-radius: 10px; font-size: 20px; font-weight: 800; min-width: 45px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
+        .time-value { background: white; color: var(--dark-pink); padding: 8px 10px; border-radius: 10px; font-size: 20px; font-weight: 800; min-width: 45px; }
         .time-label { font-size: 11px; color: #777; margin-top: 5px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <audio id="love-song" loop>
+    <audio id="love-song" loop preload="auto">
         <source src="https://files.catbox.moe/3x0al8.mp3" type="audio/mpeg">
     </audio>
 
@@ -58,7 +48,7 @@
         </div>
 
         <div id="main-content">
-            <div class="lyrics-container">
+            <div class="lyrics-container" id="lyrics-box">
                 <span class="lyric-line" id="l1">ورجعيني لحلاوه البدايات</span>
                 <span class="lyric-line" id="l2">نعيد ونزود الحكايات</span>
                 <span class="lyric-line" id="l3">واشوفها واقفه قدامي</span>
@@ -67,9 +57,7 @@
                 <span class="lyric-line" id="l6">واخدها في حضني من تاني</span>
             </div>
 
-            <div class="message">
-                والله يا سلمي عارف اني قفلتك مني وعارف انك زعلانه وشايله بس اقسم بالله بحبك ومش عارف اعيش من غيرك حقك عليا ينور عيني بقالي يوم شغال في الموقع ده منمتش عشان اعملهولك والله وحياتي عندك تعالي نحاول مره كمان، مش عايز غيرك ينور عيني❤️
-            </div>
+            <div class="message">والله يا سلمي عارف اني قفلتك مني وعارف انك زعلانه وشايله بس اقسم بالله بحبك ومش عارف اعيش من غيرك حقك عليا ينور عيني بقالي يوم شغال في الموقع ده منمتش عشان اعملهولك والله وحياتي عندك تعالي نحاول مره كمان، مش عايز غيرك ينور عيني❤️</div>
 
             <div class="photo-cards">
                 <div class="photo-card"><img src="https://i.ibb.co/LhdKTsbc/image.png"></div>
@@ -84,13 +72,13 @@
             </div>
 
             <div style="color:var(--dark-pink); margin-bottom:5px; font-weight:bold;">احنا مع بعض من يوم 25-8-2024:</div>
-            <div class="timer-wrapper">
-                <div id="timer">جاري الحساب...</div>
-            </div>
+            <div class="timer-wrapper"><div id="timer">جاري الحساب...</div></div>
         </div>
     </div>
 
     <script>
+        const song = document.getElementById('love-song');
+
         function playLyrics() {
             for(let i=1; i<=6; i++) { document.getElementById('l' + i).classList.remove('active'); }
             setTimeout(() => document.getElementById('l1').classList.add('active'), 1000);
@@ -102,16 +90,20 @@
         }
 
         function checkPass() {
-            const pass = document.getElementById('password').value;
-            if(pass === "5-11-2007") {
+            if(document.getElementById('password').value === "5-11-2007") {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('main-content').style.display = 'block';
-                const song = document.getElementById('love-song');
-                song.play().catch(() => {
-                    document.body.addEventListener('click', () => song.play(), {once: true});
+                
+                // تشغيل إجباري للأغنية
+                song.play().then(() => {
+                    console.log("Playback started");
+                }).catch(e => {
+                    console.log("Playback failed, waiting for user interaction");
+                    document.addEventListener('click', () => song.play(), {once: true});
                 });
+
                 playLyrics();
-                song.onplay = function() { playLyrics(); };
+                song.onplay = () => playLyrics();
                 startTimer();
             } else { alert("الباسورد غلط يا سولي.. ركزي 😂"); }
         }
@@ -119,19 +111,16 @@
         function startTimer() {
             const startDate = new Date(2024, 7, 25); 
             setInterval(() => {
-                const now = new Date();
-                const diff = now - startDate;
+                const diff = new Date() - startDate;
                 const d = Math.floor(diff / 86400000);
                 const h = Math.floor((diff / 3600000) % 24);
                 const m = Math.floor((diff / 60000) % 60);
                 const s = Math.floor((diff / 1000) % 60);
-                
                 document.getElementById('timer').innerHTML = `
                     <div class="time-unit"><div class="time-value">${d}</div><div class="time-label">يوم</div></div>
                     <div class="time-unit"><div class="time-value">${h}</div><div class="time-label">ساعة</div></div>
                     <div class="time-unit"><div class="time-value">${m}</div><div class="time-label">دقيقة</div></div>
-                    <div class="time-unit"><div class="time-value">${s}</div><div class="time-label">ثانية</div></div>
-                `;
+                    <div class="time-unit"><div class="time-value">${s}</div><div class="time-label">ثانية</div></div>`;
             }, 1000);
         }
     </script>
