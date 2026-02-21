@@ -17,7 +17,7 @@
         .message { font-size: 16px; color: #555; background: #fff8f9; padding: 15px; border-radius: 10px; border-right: 4px solid var(--dark-pink); margin: 20px 0; line-height: 1.6; }
         .photo-cards { display: flex; justify-content: center; gap: 15px; margin: 20px 0; }
         .photo-card { width: 110px; height: 140px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transform: rotate(-3deg); }
-        .photo-card img { width: 100%; height: 100%; border-radius: 5px; }
+        .photo-card img { width: 100%; height: 100%; border-radius: 5px; object-fit: cover; }
         .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
         .flip-card { height: 130px; perspective: 1000px; cursor: pointer; }
         .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
@@ -30,25 +30,28 @@
         .time-unit { display: flex; flex-direction: column; align-items: center; }
         .time-value { background: white; color: var(--dark-pink); padding: 8px 10px; border-radius: 10px; font-size: 20px; font-weight: 800; min-width: 45px; }
         .time-label { font-size: 11px; color: #777; margin-top: 5px; }
+        /* زرار طوارئ */
+        #play-hint { display: none; color: var(--dark-pink); font-size: 12px; margin-top: 10px; cursor: pointer; text-decoration: underline; }
     </style>
 </head>
 <body>
 
     <audio id="love-song" loop preload="auto">
-        <source src="song.mp3" type="audio/mpeg">
+        <source src="./song.mp3" type="audio/mpeg">
     </audio>
 
     <div class="container">
         <div id="login-screen">
             <h2 style="color: var(--dark-pink);">وحشتيني يا سولي ❤️</h2>
-            <p>اكتبي عيد ميلادك عشان تشوفي المفاجأة</p>
+            <p>اكتبي تاريخ ميلادك عشان تشوفي المفاجأة</p>
             <input type="text" id="password" placeholder="5-11-2007">
             <br>
             <button onclick="checkPass()">انتي لسي هتفكري😂❤️</button>
         </div>
 
         <div id="main-content">
-            <div class="lyrics-container" id="lyrics-box">
+            <div id="play-hint" onclick="forcePlay()">لو الصوت مش شغال دوسي هنا ❤️</div>
+            <div class="lyrics-container">
                 <span class="lyric-line" id="l1">ورجعيني لحلاوه البدايات</span>
                 <span class="lyric-line" id="l2">نعيد ونزود الحكايات</span>
                 <span class="lyric-line" id="l3">واشوفها واقفه قدامي</span>
@@ -75,6 +78,12 @@
     <script>
         const song = document.getElementById('love-song');
 
+        function forcePlay() {
+            song.muted = false;
+            song.play();
+            document.getElementById('play-hint').style.display = 'none';
+        }
+
         function playLyrics() {
             for(let i=1; i<=6; i++) { 
                 const line = document.getElementById('l' + i);
@@ -93,20 +102,19 @@
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('main-content').style.display = 'block';
                 
-                // محاولة تشغيل الأغنية بكل الطرق الممكنة
-                song.muted = false; // التأكد إنها مش صامتة
-                const startSong = () => {
-                    song.play().then(() => {
-                        console.log("Playing!");
-                    }).catch(err => {
-                        console.error("Play failed: ", err);
-                        // لو فشل، بنعمل مستمع لأول لمسة حقيقية على الشاشة
-                        document.addEventListener('touchstart', () => song.play(), {once: true});
-                        document.addEventListener('click', () => song.play(), {once: true});
+                // محاولة التشغيل
+                const promise = song.play();
+                if (promise !== undefined) {
+                    promise.then(() => {
+                        // اشتغلت تمام
+                    }).catch(error => {
+                        // لو فشلت بنظهر زرار المساعدة
+                        document.getElementById('play-hint').style.display = 'block';
+                        // محاولة تانية مع أي لمسة
+                        document.body.addEventListener('click', () => song.play(), {once: true});
                     });
-                };
+                }
 
-                startSong();
                 playLyrics();
                 song.onplay = () => playLyrics();
                 startTimer();
