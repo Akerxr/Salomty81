@@ -17,19 +17,19 @@
         .message { font-size: 16px; color: #555; background: #fff8f9; padding: 15px; border-radius: 10px; border-right: 4px solid var(--dark-pink); margin: 20px 0; line-height: 1.6; }
         .photo-cards { display: flex; justify-content: center; gap: 15px; margin: 20px 0; }
         .photo-card { width: 110px; height: 140px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transform: rotate(-3deg); }
-        .photo-card img { width: 100%; height: 100%; object-fit: cover; border-radius: 5px; }
+        .photo-card img { width: 100%; height: 100%; border-radius: 5px; }
         .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
         .flip-card { height: 130px; perspective: 1000px; cursor: pointer; }
         .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
         .flip-card.active .flip-card-inner { transform: rotateY(180deg); }
         .front, .back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 15px; display: flex; align-items: center; justify-content: center; padding: 10px; font-weight: bold; }
-        .front { background: var(--main-pink); color: white; font-size: 14px; }
+        .front { background: var(--main-pink); color: white; }
         .back { background: var(--dark-pink); color: white; transform: rotateY(180deg); font-size: 13px; }
         .timer-wrapper { background: linear-gradient(145deg, #fff0f3, #ffb6c1); padding: 15px; border-radius: 20px; margin-top: 10px; }
         #timer { display: flex; justify-content: space-around; align-items: center; gap: 5px; }
         .time-unit { display: flex; flex-direction: column; align-items: center; }
         .time-value { background: white; color: var(--dark-pink); padding: 8px 10px; border-radius: 10px; font-size: 20px; font-weight: 800; min-width: 45px; }
-        .time-label { font-size: 11px; color: #777; margin-top: 5px; font-weight: bold; }
+        .time-label { font-size: 11px; color: #777; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -48,7 +48,7 @@
         </div>
 
         <div id="main-content">
-            <div class="lyrics-container">
+            <div class="lyrics-container" id="lyrics-box">
                 <span class="lyric-line" id="l1">ورجعيني لحلاوه البدايات</span>
                 <span class="lyric-line" id="l2">نعيد ونزود الحكايات</span>
                 <span class="lyric-line" id="l3">واشوفها واقفه قدامي</span>
@@ -57,7 +57,10 @@
                 <span class="lyric-line" id="l6">واخدها في حضني من تاني</span>
             </div>
             <div class="message">والله يا سلمي عارف اني قفلتك مني وعارف انك زعلانه وشايله بس اقسم بالله بحبك ومش عارف اعيش من غيرك حقك عليا ينور عيني بقالي يوم شغال في الموقع ده منمتش عشان اعملهولك والله وحياتي عندك تعالي نحاول مره كمان، مش عايز غيرك ينور عيني❤️</div>
-            <div class="photo-cards"><div class="photo-card"><img src="https://i.ibb.co/LhdKTsbc/image.png"></div><div class="photo-card"><img src="https://i.ibb.co/LXGCtd10/image.png"></div></div>
+            <div class="photo-cards">
+                <div class="photo-card"><img src="https://i.ibb.co/LhdKTsbc/image.png" alt="img"></div>
+                <div class="photo-card"><img src="https://i.ibb.co/LXGCtd10/image.png" alt="img"></div>
+            </div>
             <div class="cards-grid">
                 <div class="flip-card" onclick="this.classList.toggle('active')"><div class="flip-card-inner"><div class="front">❤️<br>كارت 1</div><div class="back">محبتش</div></div></div>
                 <div class="flip-card" onclick="this.classList.toggle('active')"><div class="flip-card-inner"><div class="front">❤️<br>كارت 2</div><div class="back">ولا هحب</div></div></div>
@@ -71,8 +74,12 @@
 
     <script>
         const song = document.getElementById('love-song');
+
         function playLyrics() {
-            for(let i=1; i<=6; i++) { document.getElementById('l' + i).classList.remove('active'); }
+            for(let i=1; i<=6; i++) { 
+                const line = document.getElementById('l' + i);
+                if(line) line.classList.remove('active'); 
+            }
             setTimeout(() => document.getElementById('l1').classList.add('active'), 1000);
             setTimeout(() => document.getElementById('l2').classList.add('active'), 4800);
             setTimeout(() => document.getElementById('l3').classList.add('active'), 9000);
@@ -80,16 +87,32 @@
             setTimeout(() => document.getElementById('l5').classList.add('active'), 17500);
             setTimeout(() => document.getElementById('l6').classList.add('active'), 21500);
         }
+
         function checkPass() {
             if(document.getElementById('password').value === "5-11-2007") {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('main-content').style.display = 'block';
-                song.play(); 
+                
+                // محاولة تشغيل الأغنية بكل الطرق الممكنة
+                song.muted = false; // التأكد إنها مش صامتة
+                const startSong = () => {
+                    song.play().then(() => {
+                        console.log("Playing!");
+                    }).catch(err => {
+                        console.error("Play failed: ", err);
+                        // لو فشل، بنعمل مستمع لأول لمسة حقيقية على الشاشة
+                        document.addEventListener('touchstart', () => song.play(), {once: true});
+                        document.addEventListener('click', () => song.play(), {once: true});
+                    });
+                };
+
+                startSong();
                 playLyrics();
                 song.onplay = () => playLyrics();
                 startTimer();
             } else { alert("الباسورد غلط!"); }
         }
+
         function startTimer() {
             const startDate = new Date(2024, 7, 25); 
             setInterval(() => {
@@ -98,7 +121,11 @@
                 const h = Math.floor((diff / 3600000) % 24);
                 const m = Math.floor((diff / 60000) % 60);
                 const s = Math.floor((diff / 1000) % 60);
-                document.getElementById('timer').innerHTML = `<div class="time-unit"><div class="time-value">${d}</div><div class="time-label">يوم</div></div><div class="time-unit"><div class="time-value">${h}</div><div class="time-label">ساعة</div></div><div class="time-unit"><div class="time-value">${m}</div><div class="time-label">دقيقة</div></div><div class="time-unit"><div class="time-value">${s}</div><div class="time-label">ثانية</div></div>`;
+                document.getElementById('timer').innerHTML = `
+                    <div class="time-unit"><div class="time-value">${d}</div><div class="time-label">يوم</div></div>
+                    <div class="time-unit"><div class="time-value">${h}</div><div class="time-label">ساعة</div></div>
+                    <div class="time-unit"><div class="time-value">${m}</div><div class="time-label">دقيقة</div></div>
+                    <div class="time-unit"><div class="time-value">${s}</div><div class="time-label">ثانية</div></div>`;
             }, 1000);
         }
     </script>
