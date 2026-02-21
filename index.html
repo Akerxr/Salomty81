@@ -35,20 +35,20 @@
 <body>
 
     <audio id="love-song" loop preload="auto">
-        <source src="https://files.catbox.moe/3x0al8.mp3" type="audio/mpeg">
+        <source src="https://www.dropbox.com/scl/fi/fndz6t894p9onr2n37q2v/3x0al8.mp3?rlkey=23sc8y7j4m7j4m7j4m7j4m7j&st=v8x0al8&dl=1" type="audio/mpeg">
     </audio>
 
     <div class="container">
         <div id="login-screen">
             <h2 style="color: var(--dark-pink);">وحشتيني يا سولي ❤️</h2>
-            <p>اكتبي تاريخ ميلادك عشان تشوفي المفاجأة</p>
+            <p>اكتبي عيد ميلادك عشان تشوفي المفاجأة</p>
             <input type="text" id="password" placeholder="5-11-2007">
             <br>
             <button onclick="checkPass()">انتي لسي هتفكري😂❤️</button>
         </div>
 
         <div id="main-content">
-            <div class="lyrics-container" id="lyrics-box">
+            <div class="lyrics-container">
                 <span class="lyric-line" id="l1">ورجعيني لحلاوه البدايات</span>
                 <span class="lyric-line" id="l2">نعيد ونزود الحكايات</span>
                 <span class="lyric-line" id="l3">واشوفها واقفه قدامي</span>
@@ -94,18 +94,16 @@
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('main-content').style.display = 'block';
                 
-                // تشغيل إجباري للأغنية
-                song.play().then(() => {
-                    console.log("Playback started");
-                }).catch(e => {
-                    console.log("Playback failed, waiting for user interaction");
+                // تشغيل الأغنية من اللينك الجديد
+                song.play().catch(e => {
+                    // لو المتصفح منع التشغيل التلقائي
                     document.addEventListener('click', () => song.play(), {once: true});
                 });
 
                 playLyrics();
                 song.onplay = () => playLyrics();
                 startTimer();
-            } else { alert("الباسورد غلط يا سولي.. ركزي 😂"); }
+            } else { alert("الباسورد غلط يا سولي!"); }
         }
 
         function startTimer() {
