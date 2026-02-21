@@ -35,7 +35,7 @@
 <body>
 
     <audio id="love-song" loop preload="auto">
-        <source src="https://www.dropbox.com/scl/fi/fndz6t894p9onr2n37q2v/3x0al8.mp3?rlkey=23sc8y7j4m7j4m7j4m7j4m7j&st=v8x0al8&dl=1" type="audio/mpeg">
+        <source src="song.mp3" type="audio/mpeg">
     </audio>
 
     <div class="container">
@@ -56,21 +56,14 @@
                 <span class="lyric-line" id="l5">جيبيها صدفه في الاحلام</span>
                 <span class="lyric-line" id="l6">واخدها في حضني من تاني</span>
             </div>
-
             <div class="message">والله يا سلمي عارف اني قفلتك مني وعارف انك زعلانه وشايله بس اقسم بالله بحبك ومش عارف اعيش من غيرك حقك عليا ينور عيني بقالي يوم شغال في الموقع ده منمتش عشان اعملهولك والله وحياتي عندك تعالي نحاول مره كمان، مش عايز غيرك ينور عيني❤️</div>
-
-            <div class="photo-cards">
-                <div class="photo-card"><img src="https://i.ibb.co/LhdKTsbc/image.png"></div>
-                <div class="photo-card"><img src="https://i.ibb.co/LXGCtd10/image.png"></div>
-            </div>
-
+            <div class="photo-cards"><div class="photo-card"><img src="https://i.ibb.co/LhdKTsbc/image.png"></div><div class="photo-card"><img src="https://i.ibb.co/LXGCtd10/image.png"></div></div>
             <div class="cards-grid">
                 <div class="flip-card" onclick="this.classList.toggle('active')"><div class="flip-card-inner"><div class="front">❤️<br>كارت 1</div><div class="back">محبتش</div></div></div>
                 <div class="flip-card" onclick="this.classList.toggle('active')"><div class="flip-card-inner"><div class="front">❤️<br>كارت 2</div><div class="back">ولا هحب</div></div></div>
                 <div class="flip-card" onclick="this.classList.toggle('active')"><div class="flip-card-inner"><div class="front">❤️<br>كارت 3</div><div class="back">حد</div></div></div>
                 <div class="flip-card" onclick="this.classList.toggle('active')"><div class="flip-card-inner"><div class="front">❤️<br>كارت 4</div><div class="back">زي ما حبيتك يا نور عيني تعالي نرجع❤️</div></div></div>
             </div>
-
             <div style="color:var(--dark-pink); margin-bottom:5px; font-weight:bold;">احنا مع بعض من يوم 25-8-2024:</div>
             <div class="timer-wrapper"><div id="timer">جاري الحساب...</div></div>
         </div>
@@ -78,7 +71,6 @@
 
     <script>
         const song = document.getElementById('love-song');
-
         function playLyrics() {
             for(let i=1; i<=6; i++) { document.getElementById('l' + i).classList.remove('active'); }
             setTimeout(() => document.getElementById('l1').classList.add('active'), 1000);
@@ -88,24 +80,16 @@
             setTimeout(() => document.getElementById('l5').classList.add('active'), 17500);
             setTimeout(() => document.getElementById('l6').classList.add('active'), 21500);
         }
-
         function checkPass() {
             if(document.getElementById('password').value === "5-11-2007") {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('main-content').style.display = 'block';
-                
-                // تشغيل الأغنية من اللينك الجديد
-                song.play().catch(e => {
-                    // لو المتصفح منع التشغيل التلقائي
-                    document.addEventListener('click', () => song.play(), {once: true});
-                });
-
+                song.play(); 
                 playLyrics();
                 song.onplay = () => playLyrics();
                 startTimer();
-            } else { alert("الباسورد غلط يا سولي!"); }
+            } else { alert("الباسورد غلط!"); }
         }
-
         function startTimer() {
             const startDate = new Date(2024, 7, 25); 
             setInterval(() => {
@@ -114,11 +98,7 @@
                 const h = Math.floor((diff / 3600000) % 24);
                 const m = Math.floor((diff / 60000) % 60);
                 const s = Math.floor((diff / 1000) % 60);
-                document.getElementById('timer').innerHTML = `
-                    <div class="time-unit"><div class="time-value">${d}</div><div class="time-label">يوم</div></div>
-                    <div class="time-unit"><div class="time-value">${h}</div><div class="time-label">ساعة</div></div>
-                    <div class="time-unit"><div class="time-value">${m}</div><div class="time-label">دقيقة</div></div>
-                    <div class="time-unit"><div class="time-value">${s}</div><div class="time-label">ثانية</div></div>`;
+                document.getElementById('timer').innerHTML = `<div class="time-unit"><div class="time-value">${d}</div><div class="time-label">يوم</div></div><div class="time-unit"><div class="time-value">${h}</div><div class="time-label">ساعة</div></div><div class="time-unit"><div class="time-value">${m}</div><div class="time-label">دقيقة</div></div><div class="time-unit"><div class="time-value">${s}</div><div class="time-label">ثانية</div></div>`;
             }, 1000);
         }
     </script>
